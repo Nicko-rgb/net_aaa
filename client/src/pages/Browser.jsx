@@ -145,6 +145,9 @@ const Browser = () => {
         setSelectedVideo(null);
     };
 
+    const handleReload = () => {
+        window.location.reload()
+    }
     const renderContent = () => {
         switch (activeSection) {
             case 'favoritos':
@@ -365,14 +368,12 @@ const Browser = () => {
         );
     }
 
-
-
     return (
         <div className="browser">
             {/* Header */}
             <header className="browser-header">
                 <div className="header-left">
-                    <h1 className="logo">NETFOX</h1>
+                    <h1 className="logo" onClick={handleReload}>NETFOX</h1>
                     <nav className="nav-menu">
                         <button 
                             className={`nav-link ${activeSection === 'inicio' ? 'active' : ''}`}

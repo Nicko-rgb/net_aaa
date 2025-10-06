@@ -333,14 +333,31 @@ app.post('/api/history', verifyToken, (req, res) => {
         return res.status(400).json({ message: 'ID del video es requerido' });
     }
     
+    // Verificar si el video ya existe en el historial del usuario
     pool.query(
-        'INSERT INTO watch_history (user_id, video_id) VALUES (?, ?)',
+        'SELECT id FROM watch_history WHERE user_id = ? AND video_id = ?',
         [userId, videoId],
-        (err, result) => {
+        (err, results) => {
             if (err) {
-                return res.status(500).json({ message: 'Error al agregar al historial' });
+                return res.status(500).json({ message: 'Error al verificar historial' });
             }
-            res.status(201).json({ message: 'Video agregado al historial' });
+            
+            // Si ya existe, no insertar duplicado
+            if (results.length > 0) {
+                return res.status(200).json({ message: 'Video ya existe en el historial' });
+            }
+            
+            // Si no existe, insertar en el historial
+            pool.query(
+                'INSERT INTO watch_history (user_id, video_id) VALUES (?, ?)',
+                [userId, videoId],
+                (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Error al agregar al historial' });
+                    }
+                    res.status(201).json({ message: 'Video agregado al historial' });
+                }
+            );
         }
     );
 });

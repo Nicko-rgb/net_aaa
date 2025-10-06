@@ -150,7 +150,7 @@ const ViewVideo = ({ video, isOpen, onClose, onFavoriteChange, onHistoryChange }
                     <ReactPlayer
                         ref={playerRef}
                         src={getDirectDropboxUrl(video.videoUrl)}
-                        controls={false}
+                        controls={true}
                         playing={true}
                         width="100%"
                         height="100%"
@@ -163,6 +163,7 @@ const ViewVideo = ({ video, isOpen, onClose, onFavoriteChange, onHistoryChange }
                         <span className="video-year">{video.year}</span>
                         <span className="video-category">{video.category}</span>
                     </div>
+                    <p className='descripcion'>{video.description}</p>
                     <div className="video-actions">
                         <button 
                             className={`favorite-btn ${isFavorite ? 'active' : ''}`} 

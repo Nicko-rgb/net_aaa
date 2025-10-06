@@ -141,6 +141,73 @@ const Home = () => {
                 </div>
             </section>
 
+            <footer className="footer-section">
+                <div className="footer-content">
+                    <div className="footer-signup">
+                        <h2>¿Quieres ver Netflix ya? Ingresa tu email para crear una cuenta o reiniciar tu membresía de Netflix.</h2>
+                        <div className="email-signup">
+                            <input 
+                                type="email" 
+                                placeholder="Email" 
+                                className="email-input"
+                            />
+                            <button className="get-started-btn">
+                                Comenzar
+                                <svg viewBox="0 0 24 24" className="arrow-icon">
+                                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div className="footer-info">
+                        <p>¿Preguntas? Llama al <a href="tel:0800558821">0 800 55821</a></p>
+                        
+                        <div className="footer-links">
+                            <div className="link-column">
+                                <a href="#">Preguntas frecuentes</a>
+                                <a href="#">Relaciones con inversionistas</a>
+                                <a href="#">Formas de ver</a>
+                                <a href="#">Información corporativa</a>
+                                <a href="#">Solo en Netflix</a>
+                            </div>
+                            <div className="link-column">
+                                <a href="#">Centro de ayuda</a>
+                                <a href="#">Empleo</a>
+                                <a href="#">Términos de uso</a>
+                                <a href="#">Contáctanos</a>
+                            </div>
+                            <div className="link-column">
+                                <a href="#">Cuenta</a>
+                                <a href="#">Canjear tarjetas de regalo</a>
+                                <a href="#">Privacidad</a>
+                                <a href="#">Prueba de velocidad</a>
+                            </div>
+                            <div className="link-column">
+                                <a href="#">Prensa</a>
+                                <a href="#">Comprar tarjetas de regalo</a>
+                                <a href="#">Preferencias de cookies</a>
+                                <a href="#">Avisos legales</a>
+                            </div>
+                        </div>
+                        
+                        <div className="language-selector">
+                            <select>
+                                <option value="es">🌐 Español</option>
+                                <option value="en">🌐 English</option>
+                            </select>
+                        </div>
+                        
+                        <p className="netflix-country">NetFox Perú</p>
+                        
+                        <p className="recaptcha-notice">
+                            Esta página está protegida por Google reCAPTCHA para comprobar que no eres un robot. 
+                            <a href="#"> Más info.</a>
+                        </p>
+                    </div>
+                </div>
+            </footer>
+
         </div>
     )
 }

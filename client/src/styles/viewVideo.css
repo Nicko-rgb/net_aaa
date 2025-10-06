@@ -11,7 +11,6 @@
     align-items: center;
     z-index: 1000;
     padding: 20px;
-    box-sizing: border-box;
 }
 
 .video-modal-content {
@@ -155,10 +154,16 @@
 
 .video-meta {
     display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
+    align-items: center;
+    gap: .8rem;
+    margin-bottom: .5rem;
     font-size: 0.9rem;
 }
+.descripcion {
+    margin-bottom: 24px;
+}
+
+
 
 .video-year {
     color: #46d369;

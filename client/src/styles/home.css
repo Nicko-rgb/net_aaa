@@ -228,3 +228,197 @@
         height: 67px;
     }
 }
+
+/* ===== ESTILOS DEL FOOTER ===== */
+.footer-section {
+    color: #cecece;
+    /* padding: 70px 0 50px; */
+    border-top: 8px solid #222;
+}
+
+.footer-content {
+    max-width: 1170px;
+    margin: 0 auto;
+    padding: 0 45px;
+}
+
+.footer-signup {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.footer-signup h2 {
+    /* color: #fff; */
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    max-width: 950px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.email-signup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.email-input {
+    flex: 1;
+    min-height: 56px;
+    padding: 16px;
+    background-color: rgba(22, 22, 22, 0.7);
+    border: 1px solid rgba(128, 128, 128, 0.7);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.email-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.email-input:focus {
+    outline: none;
+    border-color: #fff;
+    background-color: rgba(22, 22, 22, 0.9);
+}
+
+.get-started-btn {
+    background-color: #e50914;
+    color: #fff;
+    border: none;
+    padding: 16px 24px;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 56px;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.get-started-btn:hover {
+    background-color: #f40612;
+}
+
+.arrow-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.footer-info p {
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.footer-info a {
+    color: #cecece;
+    text-decoration: underline;
+}
+
+.footer-info a:hover {
+    text-decoration: none;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.link-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.link-column a {
+    color: #cecece;
+    text-decoration: underline;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.link-column a:hover {
+    text-decoration: none;
+}
+
+.language-selector {
+    margin-bottom: 20px;
+}
+
+.language-selector select {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #737373;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.language-selector select:focus {
+    outline: none;
+    border-color: #fff;
+}
+
+.netflix-country {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.recaptcha-notice {
+    font-size: 13px;
+    color: #737373;
+    line-height: 1.4;
+}
+
+.recaptcha-notice a {
+    color: #0071eb;
+}
+
+/* Responsive para el footer */
+@media (max-width: 768px) {
+    .footer-content {
+        padding: 0 20px;
+    }
+    
+    .footer-signup h2 {
+        font-size: 1.1rem;
+    }
+    
+    .email-signup {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .email-input,
+    .get-started-btn {
+        width: 100%;
+        min-height: 48px;
+    }
+    
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-links {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-signup h2 {
+        font-size: 1rem;
+    }
+}
