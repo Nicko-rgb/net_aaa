@@ -2,13 +2,16 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Home from './app/home/screens/Home';
+import { AuthProvider } from './app/context/AuthContext';
 
 export default function App() {
     return (
-        <SafeAreaProvider>
-            <Home />
-            <StatusBar style="light" translucent={true} />
-        </SafeAreaProvider>
+        <AuthProvider>
+            <SafeAreaProvider>
+                <Home />
+                <StatusBar style="light" translucent={true} />
+            </SafeAreaProvider>
+        </AuthProvider>
     );
 }
 

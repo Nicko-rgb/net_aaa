@@ -10,6 +10,10 @@ import Footer from '../components/Footer';
 import Questions from '../components/Questions';
 import useSlider from '../hooks/useSlider';
 import styles from '../styles/HomeStyles';
+import { Modal } from 'react-native';
+import Login from '../../Login/screens/login';
+import Registro from '../../Login/screens/Registro';
+import LoggedIn from '../../Login/screens/LoggedIn';
 
 const { width, height } = Dimensions.get('window');
 
@@ -56,13 +60,39 @@ const Home = () => {
         setShowQuestions(false);
     };
 
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showRegistroModal, setShowRegistroModal] = useState(false);
+    const [showLoggedInModal, setShowLoggedInModal] = useState(false);
+
     const handleLoginPress = () => {
-        Alert.alert('Iniciar sesión', 'Redirigiendo a la pantalla de login');
+        setShowLoginModal(true);
     };
 
     const handleStartPress = () => {
-        Alert.alert('Comienza ya', 'Iniciando proceso de registro');
+        setShowRegistroModal(true);
     };
+
+    const closeLogin = () => setShowLoginModal(false);
+    const closeRegistro = () => setShowRegistroModal(false);
+
+    const openRegistroFromLogin = () => {
+        setShowLoginModal(false);
+        setShowRegistroModal(true);
+    };
+
+    const openLoginFromRegistro = () => {
+        setShowRegistroModal(false);
+        setShowLoginModal(true);
+    };
+
+    const onAuthSuccess = () => {
+        // cerrar otros modales y abrir modal de sesión iniciada
+        setShowLoginModal(false);
+        setShowRegistroModal(false);
+        setShowLoggedInModal(true);
+    };
+
+    const anyModalOpen = showLoginModal || showRegistroModal || showLoggedInModal;
 
     return (
         <View style={styles.container}>
@@ -89,43 +119,81 @@ const Home = () => {
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }} />
 
-            <SafeAreaView style={styles.safeAreaContainer}>
-                <Header
-                    onPrivacyPress={handlePrivacyPress}
-                    onFAQPress={handleFAQPress}
-                    onLoginPress={handleLoginPress}
-                />
+            {/* Hide the main screen behind modals so the modal appears as a full screen experience */}
+            {!anyModalOpen && (
+                <SafeAreaView style={styles.safeAreaContainer}>
+                    <Header
+                        onPrivacyPress={handlePrivacyPress}
+                        onFAQPress={handleFAQPress}
+                        onLoginPress={handleLoginPress}
+                    />
 
-                <ScrollView
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={handleScroll}
-                    scrollEventThrottle={16}
-                    onScrollBeginDrag={pauseAutoSlide}
-                    onScrollEndDrag={resumeAutoSlide}
-                    style={styles.sliderWrapper}
-                >
-                    {sliders.map((slider, index) => (
-                        <View key={index} style={styles.slideContainer}>
-                            {slider}
-                        </View>
-                    ))}
-                </ScrollView>
+                    <ScrollView
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        onScroll={handleScroll}
+                        scrollEventThrottle={16}
+                        onScrollBeginDrag={pauseAutoSlide}
+                        onScrollEndDrag={resumeAutoSlide}
+                        style={styles.sliderWrapper}
+                    >
+                        {sliders.map((slider, index) => (
+                            <View key={index} style={styles.slideContainer}>
+                                {slider}
+                            </View>
+                        ))}
+                    </ScrollView>
 
-                <SliderIndicators
-                    totalSlides={totalSlides}
-                    currentSlide={currentSlide}
-                    onIndicatorPress={goToSlide}
-                />
+                    <SliderIndicators
+                        totalSlides={totalSlides}
+                        currentSlide={currentSlide}
+                        onIndicatorPress={goToSlide}
+                    />
 
-                <Footer onStartPress={handleStartPress} />
+                    <Footer onStartPress={handleStartPress} />
 
-            </SafeAreaView>
+                </SafeAreaView>
+            )}
             <Questions
                 visible={showQuestions}
                 onClose={handleCloseQuestions}
             />
+            {/* Login modal */}
+            <Modal
+                visible={showLoginModal}
+                animationType="slide"
+                onRequestClose={closeLogin}
+                presentationStyle="fullScreen"
+                transparent={false}
+                hardwareAccelerated={true}
+            >
+                <Login onToggleView={openRegistroFromLogin} onSuccess={onAuthSuccess} onClose={closeLogin} />
+            </Modal>
+
+            {/* Registro modal */}
+            <Modal
+                visible={showRegistroModal}
+                animationType="slide"
+                onRequestClose={closeRegistro}
+                presentationStyle="fullScreen"
+                transparent={false}
+                hardwareAccelerated={true}
+            >
+                <Registro onToggleView={openLoginFromRegistro} onSuccess={onAuthSuccess} onClose={closeRegistro} />
+            </Modal>
+
+            {/* Logged in modal */}
+            <Modal
+                visible={showLoggedInModal}
+                animationType="slide"
+                onRequestClose={() => setShowLoggedInModal(false)}
+                presentationStyle="fullScreen"
+                transparent={false}
+                hardwareAccelerated={true}
+            >
+                <LoggedIn onClose={() => setShowLoggedInModal(false)} />
+            </Modal>
         </View>
     );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import styles from '../styles/HeaderStyles';
 import indexImg from '../../../assets/img/indexImg';
 
@@ -14,22 +14,21 @@ const Header = ({ onPrivacyPress, onFAQPress, onLoginPress }) => {
                 <Image source={logoNet} style={styles.logoImage} />
             </View>
 
-            <View style={styles.navigationContainer}>
+            <ScrollView horizontal contentContainerStyle={styles.navigationContainer} showsHorizontalScrollIndicator={false}>
                 <TouchableOpacity
                     style={styles.navButton}
                     onPress={onPrivacyPress}
                 >
-                    <Text style={styles.navButtonText}>Privacidad</Text>
+                    <Text style={styles.navButtonText} numberOfLines={1} ellipsizeMode="tail">Privacidad</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.navButton}
                     onPress={onFAQPress}
                 >
-                    <Text style={styles.navButtonText}>Preguntas frecuentes</Text>
+                    <Text style={styles.navButtonText} numberOfLines={1} ellipsizeMode="tail">Preguntas frecuentes</Text>
                 </TouchableOpacity>
-
-            </View>
+            </ScrollView>
             
             <TouchableOpacity
                 style={[styles.navButton, styles.loginButton]}
