@@ -25,7 +25,7 @@ const FooterStyles = StyleSheet.create({
     startButtonText: {
         color: '#ffffff',
         fontSize: 16,
-        fontWeight: 500,
+        fontWeight: '500',
         textAlign: 'center',
         letterSpacing: 1,
     },

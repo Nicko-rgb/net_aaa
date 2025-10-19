@@ -9,12 +9,16 @@ import SliderIndicators from '../components/SliderIndicators';
 import Footer from '../components/Footer';
 import Questions from '../components/Questions';
 import useSlider from '../hooks/useSlider';
+import { useAuthContext } from '../../context/AuthContext';
+import Login from '../../login/screens/Login';
 import styles from '../styles/HomeStyles';
 
 const { width, height } = Dimensions.get('window');
 
 const Home = () => {
     const [showQuestions, setShowQuestions] = useState(false);
+    const [showLogin, setShowLogin] = useState(false);
+    const { login } = useAuthContext();
 
     const {
         currentSlide,
@@ -57,7 +61,16 @@ const Home = () => {
     };
 
     const handleLoginPress = () => {
-        Alert.alert('Iniciar sesión', 'Redirigiendo a la pantalla de login');
+        setShowLogin(true);
+    };
+
+    const handleCloseLogin = () => {
+        setShowLogin(false);
+    };
+
+    const handleLoginSuccess = (userData) => {
+        login(userData);
+        setShowLogin(false);
     };
 
     const handleStartPress = () => {
@@ -125,6 +138,11 @@ const Home = () => {
             <Questions
                 visible={showQuestions}
                 onClose={handleCloseQuestions}
+            />
+            <Login
+                visible={showLogin}
+                onClose={handleCloseLogin}
+                onLoginSuccess={handleLoginSuccess}
             />
         </View>
     );
