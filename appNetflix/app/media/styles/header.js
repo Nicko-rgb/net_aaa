@@ -1,63 +1,66 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        backgroundColor: '#000',
-        borderBottomWidth: 1,
-        borderBottomColor: '#333',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+    },
+    leftSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    rightSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
     },
     logo: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#e50914',
+        width: 40,
+        height: 35,
     },
-    navButtons: {
-        flexDirection: 'row',
-    },
-    navButton: {
-        paddingHorizontal: 15,
-        paddingVertical: 8,
-        borderRadius: 5,
-        marginRight: 20,
-    },
-    navButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '500',
+    iconButton: {
+        marginLeft: 20,
     },
     searchInput: {
-        backgroundColor: '#333',
+        backgroundColor: '#222',
         color: '#fff',
-        paddingHorizontal: 15,
+        borderRadius: 8,
+        paddingHorizontal: 12,
         paddingVertical: 8,
-        borderRadius: 5,
-        minWidth: 200,
-        fontSize: 16,
+        flex: 1
     },
-    userSection: {
-        alignItems: 'flex-end',
+    overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        flexDirection: 'row',
+    },
+    sideMenu: {
+        width: 250,
+        backgroundColor: '#111',
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        height: '100%',
     },
     userName: {
         color: '#fff',
-        fontSize: 14,
-        marginBottom: 5,
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginBottom: 20,
     },
-    closeSesionBtn: {
-        backgroundColor: '#e50914',
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 4,
+    menuItem: {
+        paddingVertical: 10,
+        borderBottomColor: '#333',
+        borderBottomWidth: 1,
     },
-    closeSesionText: {
+    menuText: {
         color: '#fff',
-        fontSize: 12,
-        fontWeight: '500',
+        fontSize: 16,
+    },
+    logoutButton: {
+        marginTop: 20,
+        borderTopColor: '#333',
+        borderTopWidth: 1,
     },
 });
-
-export default styles;

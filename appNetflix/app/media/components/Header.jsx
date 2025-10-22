@@ -1,50 +1,46 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, TextInput, Modal, Image } from 'react-native';
 import { useAuthContext } from '../../context/AuthContext';
 import styles from '../styles/header';
+import { Ionicons } from '@expo/vector-icons';
+import logoNet from '../../../assets/img/Logo.png';
 
-const Header = ({ searchQuery, setSearchQuery, handleScreenChange }) => {
-    const { user, logout } = useAuthContext();
+const Header = ({ searchQuery, setSearchQuery, handleScreenChange, onRefresh, onToggleMenu }) => {
+
+    const [searchVisible, setSearchVisible] = useState(false);
+    const toggleSearch = () => setSearchVisible(!searchVisible);
+
+    const handleRefresh = () => {
+        onRefresh();
+        handleScreenChange('inicio')
+    }
 
     return (
         <View style={styles.header}>
-            <Text style={styles.logo}>NETFLIX</Text>
-            
-            <View style={styles.navButtons}>
-                <TouchableOpacity 
-                    style={styles.navButton} 
-                    onPress={() => handleScreenChange('inicio')}
-                >
-                    <Text style={styles.navButtonText}>Inicio</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                    style={styles.navButton} 
-                    onPress={() => handleScreenChange('favoritos')}
-                >
-                    <Text style={styles.navButtonText}>Favoritos</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                    style={styles.navButton} 
-                    onPress={() => handleScreenChange('historial')}
-                >
-                    <Text style={styles.navButtonText}>Historial</Text>
-                </TouchableOpacity>
-            </View>
+            {/* ====== IZQUIERDA: LOGO ====== */}
+            <TouchableOpacity style={styles.leftSection} onPress={handleRefresh}>
+                <Image source={logoNet} style={styles.logo} />
+            </TouchableOpacity>
 
-            <TextInput
-                style={styles.searchInput}
-                placeholder="Buscar..."
-                placeholderTextColor="#999"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-            />
+            {/* ====== BUSCADOR ====== */}
+            {searchVisible && (
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Buscar..."
+                    placeholderTextColor="#999"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    autoFocus
+                />
+            )}
 
-            <View style={styles.userSection}>
-                <Text style={styles.userName}>{user?.email || 'Usuario'}</Text>
-                <TouchableOpacity style={styles.closeSesionBtn} onPress={logout}>
-                    <Text style={styles.closeSesionText}>Cerrar Sesión</Text>
+            {/* ====== DERECHA: ICONOS ====== */}
+            <View style={styles.rightSection}>
+                <TouchableOpacity onPress={toggleSearch} style={styles.iconButton}>
+                    <Ionicons name="search" size={22} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onToggleMenu} style={styles.iconButton}>
+                    <Ionicons name="menu" size={26} color="#fff" />
                 </TouchableOpacity>
             </View>
         </View>
