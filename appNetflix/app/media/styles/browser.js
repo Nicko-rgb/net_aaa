@@ -1,18 +1,24 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    browser: {
+        flex: 1,
+        backgroundColor: '#141414',
+    },
+    views: {
+        paddingHorizontal: 10
+    },
+
     // categorias de videos
     tagsContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 5,
         gap: 10,
-        marginTop: 15,
+        marginTop: 10,
         marginBottom: 10
     },
     tagButton: {
         paddingHorizontal: 15,
-        // paddingVertical: 10,
         height: 35,
         justifyContent: 'center',
         borderRadius: 7,
@@ -31,18 +37,14 @@ const styles = StyleSheet.create({
     },
 
     // Vista de inicio 
-    title: {
-        color: 'white',
+    columnWrapper: {
+        justifyContent: 'space-between',
+        gap: 10,
+    },
+    gridContainer: {
+        gap: 10,
     },
 
-    gridContainer: {
-        paddingHorizontal: 10,
-        paddingBottom: 20,
-    },
-    columnWrapper: {
-        justifyContent: 'space-between', // distribuye uniformemente las cards
-        marginBottom: 15,
-    },
 });
 
 export default styles;
