@@ -104,9 +104,10 @@ app.post('/api/login', (req, res) => {
     if (!email || !password) {
         return res.status(400).json({ message: 'Email y contraseña son requeridos' });
     }
-    
+        
     pool.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
         if (err) {
+            console.error('🔴 Error en consulta DB:', err);
             return res.status(500).json({ message: 'Error del servidor' });
         }
         
@@ -115,6 +116,7 @@ app.post('/api/login', (req, res) => {
         }
         
         const user = results[0];
+        
         const isValidPassword = await bcrypt.compare(password, user.password);
         
         if (!isValidPassword) {
@@ -122,6 +124,7 @@ app.post('/api/login', (req, res) => {
         }
         
         const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '24h' });
+        
         res.json({
             message: 'Login exitoso',
             token,
@@ -131,7 +134,7 @@ app.post('/api/login', (req, res) => {
 });
 
 // Obtener todos los videos de la base de datos
-app.get('/api/videos', verifyToken, (req, res) => {
+app.get('/api/videos', (req, res) => {
     pool.query('SELECT id_video as id, titulo as title, genero as category, anio as year, imagen as image, url as videoUrl, descripcion as description FROM videos ORDER BY id_video DESC', (err, results) => {
         if (err) {
             console.error('Error al obtener videos:', err);
@@ -184,7 +187,7 @@ app.get('/api/videos/category/:category', verifyToken, (req, res) => {
 
 // Obtener categorías de videos disponibles (6 aleatorias)
 app.get('/api/videos/categories', verifyToken, (req, res) => {
-    pool.query('SELECT DISTINCT genero as category FROM videos WHERE genero IS NOT NULL ORDER BY RAND() LIMIT 6', (err, results) => {
+    pool.query('SELECT DISTINCT genero as category FROM videos WHERE genero IS NOT NULL ORDER BY RAND() LIMIT 10', (err, results) => {
         if (err) {
             return res.status(500).json({ message: 'Error del servidor' });
             }

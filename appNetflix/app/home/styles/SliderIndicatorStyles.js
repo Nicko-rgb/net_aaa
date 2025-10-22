@@ -23,7 +23,8 @@ const SliderIndicatorStyles = StyleSheet.create({
     activeIndicator: {
         backgroundColor: '#e50914',
         borderColor: '#e50914',
-        transform: [{ scale: 1.2 }],
+        width: 12,
+        height: 12,
     },
 });
 

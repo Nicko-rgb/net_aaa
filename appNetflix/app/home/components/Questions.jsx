@@ -153,12 +153,6 @@ const Questions = ({ visible, onClose }) => {
                         {questionsData.map((item) => {
                             const isExpanded = expandedQuestions.has(item.id);
                             initializeAnimatedHeight(item.id);
-                            
-                            const animatedHeight = animatedHeights[item.id].interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [0, 200], // Altura máxima estimada para la respuesta
-                                extrapolate: 'clamp',
-                            });
 
                             return (
                                 <View key={item.id} style={styles.questionItem}>
@@ -167,33 +161,25 @@ const Questions = ({ visible, onClose }) => {
                                         onPress={() => toggleQuestion(item.id)}
                                     >
                                         <Text style={styles.questionText}>
-                                            {item.question}
-                                        </Text>
-                                        <Animated.Text style={[
+                                             {item.question}
+                                         </Text>
+                                        <Text style={[
                                             styles.expandIcon,
                                             {
                                                 transform: [{
-                                                    rotate: animatedHeights[item.id] ? animatedHeights[item.id].interpolate({
-                                                        inputRange: [0, 1],
-                                                        outputRange: ['0deg', '45deg'],
-                                                        extrapolate: 'clamp',
-                                                    }) : '0deg'
+                                                    rotate: isExpanded ? '45deg' : '0deg'
                                                 }]
                                             }
                                         ]}>
                                             +
-                                        </Animated.Text>
+                                        </Text>
                                     </TouchableOpacity>
 
                                     <Animated.View style={[
                                         styles.answerContainer,
                                         {
-                                            maxHeight: animatedHeights[item.id] ? animatedHeights[item.id].interpolate({
-                                                inputRange: [0, 1],
-                                                outputRange: [0, 200],
-                                                extrapolate: 'clamp',
-                                            }) : 0,
-                                            opacity: animatedHeights[item.id] || 0,
+                                            maxHeight: isExpanded ? 200 : 0,
+                                            opacity: isExpanded ? 1 : 0,
                                         }
                                     ]}>
                                         <Text style={styles.answerText}>
