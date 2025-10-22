@@ -1,27 +1,40 @@
-import React from 'react'
-import { View, FlatList, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import styles from '../styles/browser.js';
 import CardVideo from '../components/CardVideo.jsx';
 
+const Inicio = ({ categories, videos }) => {
 
-const Inicio = ({ videos }) => {
     return (
-        <View style={styles.vista}>
-            <Text style={styles.title}>Inicio, lista todos los videos</Text>
-            <View contentContainerStyle={styles.gridContainer} >
-                {videos.map((video, index) => (
-                    <FlatList
-                        data={videos}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => <CardVideo video={item} />}
-                        numColumns={2} // ✅ Muestra 2 columnas
-                        columnWrapperStyle={styles.columnWrapper} // ✅ Alinea las columnas
-                        contentContainerStyle={styles.gridContainer}
-                        showsVerticalScrollIndicator={false}
-                    />
+        <View style={styles.views}>
+            {/* ✅ Scroll horizontal para categorías */}
+            <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.tagsContainer}
+            >
+                {categories.map((tag, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.tagButton}
+                        activeOpacity={0.7}
+                    >
+                        <Text style={styles.tagText}>{tag}</Text>
+                    </TouchableOpacity>
                 ))}
-            </View>
+            </ScrollView>
+
+            <FlatList
+                data={videos}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => <CardVideo video={item} />}
+                numColumns={2}
+                columnWrapperStyle={styles.columnWrapper}
+                contentContainerStyle={styles.gridContainer}
+                showsVerticalScrollIndicator={false}
+            />
         </View>
-    )
-}
+    );
+};
+
 export default Inicio;

@@ -20,13 +20,13 @@ const Browser = () => {
     const renderScreen = () => {
         switch (currentScreen) {
             case 'inicio':
-                return <Inicio videos={videos} />;
+                return <Inicio categories={categories} videos={videos} />;
             case 'favoritos':
                 return <Fovorites />;
             case 'historial':
                 return <History />;
             default:
-                return <Inicio />;
+                return <Inicio categories={categories} videos={videos} />;
         }
     };
 
@@ -41,26 +41,7 @@ const Browser = () => {
                 onToggleMenu={toggleMenu}
             />
 
-            {/* ✅ Scroll horizontal para categorías */}
-            <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.tagsContainer}
-            >
-                {categories.map((tag, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={styles.tagButton}
-                        activeOpacity={0.7}
-                    >
-                        <Text style={styles.tagText}>{tag}</Text>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
-
-            <ScrollView>
-                {renderScreen()}
-            </ScrollView>
+            {renderScreen()}
 
             <Sidebar visible={sidebar} handleScreenChange={handleScreenChange} onClose={toggleMenu} />
 
