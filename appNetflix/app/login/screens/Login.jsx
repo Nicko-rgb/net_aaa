@@ -154,7 +154,7 @@ const Login = ({ visible, onClose, onLoginSuccess }) => {
                         scrollEnabled={true}
                     >
                     <View style={styles.header}>
-                        <Text style={styles.logo}>NETFOX</Text>
+                        <Text style={styles.logo}>NETFLIX</Text>
                     </View>
 
                     <View style={styles.formContainer}>
@@ -235,7 +235,7 @@ const Login = ({ visible, onClose, onLoginSuccess }) => {
                                 </TouchableOpacity>
                                 
                                 <TouchableOpacity>
-                                    <Text style={styles.helpLink}>¿Necesitas ayuda?</Text>
+                                    <Text style={styles.helpLink}>¿Olvidaste tu contraseña?</Text>
                                 </TouchableOpacity>
                             </View>
                         )}
