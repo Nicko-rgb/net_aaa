@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
-
-// Para React Native, usar la IP local en lugar de localhost
-const API_BASE_URL = 'http://10.0.2.2:7001/api'; // Para emulador Android
-// const API_BASE_URL = 'http://10.223.46.190:7001/api'; // Para dispositivo físico (tu IP local)
-// const API_BASE_URL = 'http://localhost:7001/api'; // Para web/navegador
+import apiClient from '../../utils/axiosInstance';
 
 export const useAuth = () => {
     const [loading, setLoading] = useState(false);
@@ -18,7 +13,7 @@ export const useAuth = () => {
         setError('');
         
         try {
-            const response = await axios.post(`${API_BASE_URL}/login`, {
+            const response = await apiClient.post('/login', {
                 email,
                 password
             });
@@ -52,7 +47,7 @@ export const useAuth = () => {
         setError('');
         
         try {
-            const response = await axios.post(`${API_BASE_URL}/register`, {
+            const response = await apiClient.post('/register', {
                 name,
                 email,
                 password

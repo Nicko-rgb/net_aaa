@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
@@ -24,6 +25,24 @@ const dbConfig = {
 
 // Crear un pool de conexiones
 const pool = mysql.createPool(dbConfig);
+
+// Configuración del transporter de email
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// Verificar la configuración del email
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('Error en la configuración del email:', error);
+    } else {
+        console.log('Servidor de email configurado correctamente');
+    }
+});
 
 // Verificar la conexión a la base de datos al iniciar el servidor
 pool.getConnection((err, connection) => {
@@ -135,7 +154,7 @@ app.post('/api/login', (req, res) => {
 
 // Obtener todos los videos de la base de datos
 app.get('/api/videos', (req, res) => {
-    pool.query('SELECT id_video as id, titulo as title, genero as category, anio as year, imagen as image, url as videoUrl, descripcion as description FROM videos ORDER BY id_video DESC', (err, results) => {
+    pool.query('SELECT id_video as id, titulo as title, genero as category, anio as year, imagen as image, url as videoUrl, descripcion as description FROM videos ORDER BY RAND()', (err, results) => {
         if (err) {
             console.error('Error al obtener videos:', err);
             return res.status(500).json({ message: 'Error del servidor' });
@@ -399,6 +418,152 @@ app.delete('/api/history', verifyToken, (req, res) => {
                 return res.status(500).json({ message: 'Error al limpiar historial' });
             }
             res.json({ message: 'Historial limpiado exitosamente' });
+        }
+    );
+});
+
+// ===== RUTAS DE RECUPERACIÓN DE CONTRASEÑA =====
+
+// Generar código OTP de 6 dígitos
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Enviar código de recuperación
+app.post('/api/forgot-password', (req, res) => {
+    const { email } = req.body;
+    
+    if (!email) {
+        return res.status(400).json({ message: 'El email es requerido' });
+    }
+    
+    // Verificar si el usuario existe
+    pool.query('SELECT id FROM users WHERE email = ?', [email], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error del servidor' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No existe una cuenta con este email' });
+        }
+        
+        // Generar código OTP
+        const otpCode = generateOTP();
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
+        
+        // Limpiar códigos OTP anteriores para este email
+        pool.query('DELETE FROM password_reset_otps WHERE email = ?', [email], (err) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error del servidor' });
+            }
+            
+            // Insertar nuevo código OTP
+            pool.query(
+                'INSERT INTO password_reset_otps (email, otp_code, expires_at) VALUES (?, ?, ?)',
+                [email, otpCode, expiresAt],
+                (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Error al generar código' });
+                    }
+                    
+                    // Enviar email con el código OTP
+                    const mailOptions = {
+                        from: process.env.EMAIL_FROM,
+                        to: email,
+                        subject: 'Código de recuperación de contraseña - Netfox',
+                        html: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <h2 style="color: #e50914;">Netfox - Recuperación de Contraseña</h2>
+                                <p>Hola,</p>
+                                <p>Has solicitado recuperar tu contraseña. Usa el siguiente código de verificación:</p>
+                                <div style="background-color: #f5f5f5; padding: 20px; text-align: center; margin: 20px 0;">
+                                    <h1 style="color: #e50914; font-size: 32px; margin: 0; letter-spacing: 5px;">${otpCode}</h1>
+                                </div>
+                                <p><strong>Este código expira en 15 minutos.</strong></p>
+                                <p>Si no solicitaste este cambio, puedes ignorar este email.</p>
+                                <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+                                <p style="color: #666; font-size: 12px;">
+                                    Este es un email automático, por favor no respondas a este mensaje.
+                                </p>
+                            </div>
+                        `
+                    };
+                    
+                    transporter.sendMail(mailOptions, (emailErr, info) => {
+                        if (emailErr) {
+                            console.error('Error enviando email:', emailErr);
+                            // Aún así respondemos exitosamente para no revelar errores internos
+                        } else {
+                            console.log('Email enviado:', info.response);
+                        }
+                        
+                        res.json({ 
+                            message: 'Código de verificación enviado a tu email',
+                            // En desarrollo, devolvemos el código para pruebas
+                            ...(process.env.NODE_ENV === 'development' && { otpCode })
+                        });
+                    });
+                }
+            );
+        });
+    });
+});
+
+// Verificar código OTP y cambiar contraseña
+app.post('/api/verify-otp', async (req, res) => {
+    const { email, otpCode, newPassword } = req.body;
+    
+    if (!email || !otpCode || !newPassword) {
+        return res.status(400).json({ message: 'Todos los campos son requeridos' });
+    }
+    
+    if (newPassword.length < 6) {
+        return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+    }
+    
+    // Verificar código OTP
+    pool.query(
+        'SELECT * FROM password_reset_otps WHERE email = ? AND otp_code = ? AND used = FALSE AND expires_at > NOW()',
+        [email, otpCode],
+        async (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error del servidor' });
+            }
+            
+            if (results.length === 0) {
+                return res.status(400).json({ message: 'Código inválido o expirado' });
+            }
+            
+            try {
+                // Encriptar nueva contraseña
+                const hashedPassword = await bcrypt.hash(newPassword, 10);
+                
+                // Actualizar contraseña del usuario
+                pool.query(
+                    'UPDATE users SET password = ? WHERE email = ?',
+                    [hashedPassword, email],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).json({ message: 'Error al actualizar contraseña' });
+                        }
+                        
+                        // Marcar código OTP como usado
+                        pool.query(
+                            'UPDATE password_reset_otps SET used = TRUE WHERE email = ? AND otp_code = ?',
+                            [email, otpCode],
+                            (err) => {
+                                if (err) {
+                                    console.error('Error al marcar OTP como usado:', err);
+                                }
+                                
+                                res.json({ message: 'Contraseña actualizada exitosamente' });
+                            }
+                        );
+                    }
+                );
+            } catch (error) {
+                return res.status(500).json({ message: 'Error al procesar la contraseña' });
+            }
         }
     );
 });

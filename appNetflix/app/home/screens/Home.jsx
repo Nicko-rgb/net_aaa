@@ -11,6 +11,8 @@ import Questions from '../components/Questions';
 import useSlider from '../hooks/useSlider';
 import { useAuthContext } from '../../context/AuthContext';
 import Login from '../../login/screens/Login';
+import ForgotPassword from '../../login/screens/ForgotPass';
+import VerifyOtp from '../../login/screens/VerifyOtp';
 import styles from '../styles/HomeStyles';
 
 const { width, height } = Dimensions.get('window');
@@ -18,6 +20,9 @@ const { width, height } = Dimensions.get('window');
 const Home = () => {
     const [showQuestions, setShowQuestions] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [showVerifyOtp, setShowVerifyOtp] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
     const { login } = useAuthContext();
 
     const {
@@ -75,6 +80,24 @@ const Home = () => {
 
     const handleStartPress = () => {
         Alert.alert('Comienza ya', 'Iniciando proceso de registro');
+    };
+
+    // Handlers para recuperación de contraseña
+    const handleForgotPasswordOpen = () => {
+        setShowForgotPassword(true);
+    };
+
+    const handleForgotPasswordSent = (email) => {
+        setResetEmail(email);
+        setShowForgotPassword(false);
+        setShowVerifyOtp(true);
+    };
+
+    const handlePasswordReset = (email, newPassword) => {
+        setShowVerifyOtp(false);
+        setResetEmail('');
+        Alert.alert('Éxito', 'Tu contraseña ha sido cambiada correctamente. Ahora puedes iniciar sesión.');
+        setShowLogin(true); // Abrir login después del reset
     };
 
     return (
@@ -143,6 +166,18 @@ const Home = () => {
                 visible={showLogin}
                 onClose={handleCloseLogin}
                 onLoginSuccess={handleLoginSuccess}
+                onForgotPassword={handleForgotPasswordOpen}
+            />
+            <ForgotPassword
+                visible={showForgotPassword}
+                onClose={() => setShowForgotPassword(false)}
+                onSent={handleForgotPasswordSent}
+            />
+            <VerifyOtp
+                visible={showVerifyOtp}
+                onClose={() => setShowVerifyOtp(false)}
+                onReset={handlePasswordReset}
+                email={resetEmail}
             />
         </View>
     );

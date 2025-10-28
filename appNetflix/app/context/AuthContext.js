@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import apiClient from '../utils/axiosInstance';
 
 const AuthContext = createContext();
 
@@ -18,12 +17,6 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
-
-    // ✅ axios base url
-    const api = axios.create({
-        baseURL: API_BASE_URL,
-        timeout: 10000,
-    });
 
     // 🔹 Cargar sesión al iniciar
     useEffect(() => {
@@ -61,7 +54,7 @@ export const AuthProvider = ({ children }) => {
                 return { success: false, error: 'Email y contraseña son requeridos' };
             }
             
-            const response = await api.post('/login', { 
+            const response = await apiClient.post('/login', { 
                 email: email?.trim() || '', 
                 password: password?.trim() || '' 
             });
@@ -88,7 +81,7 @@ export const AuthProvider = ({ children }) => {
     // 🔹 Registro
     const register = async (name, email, password) => {
         try {
-            const response = await api.post('/register', { name, email, password });
+            const response = await apiClient.post('/register', { name, email, password });
             const { token, user, message } = response.data;
 
             if (!token || !user) {

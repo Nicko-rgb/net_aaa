@@ -15,13 +15,13 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
+        gap: 15,
+        paddingLeft: 10,
     },
     logo: {
-        width: 40,
+        width: 50,
         height: 35,
-    },
-    iconButton: {
-        marginLeft: 20,
+        objectFit: 'contain',
     },
     searchInput: {
         backgroundColor: '#222',

@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuthContext } from './app/context/AuthContext';
 import Home from './app/home/screens/Home';
 import Browser from './app/media/screens/Browser';
+import Video from './app/media/screens/Video';
 import { View, ActivityIndicator } from 'react-native';
 
 const Stack = createStackNavigator();
@@ -38,6 +39,10 @@ const AppNavigator = () => {
                 <Stack.Screen
                     name="Home"
                     component={Home}
+                />
+                <Stack.Screen
+                    name="Video"
+                    component={Video}
                 />
             </Stack.Navigator>
         </NavigationContainer>

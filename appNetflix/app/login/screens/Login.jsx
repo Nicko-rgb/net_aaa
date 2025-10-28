@@ -3,8 +3,10 @@ import { View, ScrollView, Modal, Text, TextInput, TouchableOpacity, Alert } fro
 import styles from '../styles/login.js';
 import { useAuthContext } from '../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import ForgotPassword from './ForgotPass';
+import VerifyOtp from './VerifyOtp';
 
-const Login = ({ visible, onClose, onLoginSuccess }) => {
+const Login = ({ visible, onClose, onLoginSuccess, onForgotPassword }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
@@ -14,6 +16,9 @@ const Login = ({ visible, onClose, onLoginSuccess }) => {
     const [focusedField, setFocusedField] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [showVerifyOtp, setShowVerifyOtp] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
     const navigation = useNavigation();
 
     const { login, register, loading, isProcessing } = useAuthContext();
@@ -95,6 +100,15 @@ const Login = ({ visible, onClose, onLoginSuccess }) => {
         setFieldErrors({});
         setFocusedField('');
         onClose();
+    };
+
+    // Handlers para recuperación de contraseña
+    const handleForgotPassword = () => {
+        // Cerrar el modal de login primero y luego abrir el de forgot password
+        onClose();
+        setTimeout(() => {
+            onForgotPassword();
+        }, 100);
     };
 
     const renderInput = (field, placeholder, secureTextEntry = false) => {
@@ -234,7 +248,7 @@ const Login = ({ visible, onClose, onLoginSuccess }) => {
                                     <Text style={styles.checkboxText}>Recuérdame</Text>
                                 </TouchableOpacity>
                                 
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={handleForgotPassword}>
                                     <Text style={styles.helpLink}>¿Olvidaste tu contraseña?</Text>
                                 </TouchableOpacity>
                             </View>

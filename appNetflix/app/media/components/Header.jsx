@@ -8,7 +8,12 @@ import logoNet from '../../../assets/img/Logo.png';
 const Header = ({ searchQuery, setSearchQuery, handleScreenChange, onRefresh, onToggleMenu }) => {
 
     const [searchVisible, setSearchVisible] = useState(false);
-    const toggleSearch = () => setSearchVisible(!searchVisible);
+    const toggleSearch = () => {
+        setSearchVisible(!searchVisible);
+        if (!searchVisible) {
+            setSearchQuery('');
+        }
+    }
 
     const handleRefresh = () => {
         onRefresh();
