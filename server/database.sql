@@ -49,4 +49,17 @@ CREATE TABLE IF NOT EXISTS watch_history (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (video_id) REFERENCES videos(id_video) ON DELETE CASCADE,
     INDEX idx_user_watched (user_id, watched_at)
-)
+);
+
+USE netfox;
+-- Tabla para códigos OTP de recuperación de contraseña
+CREATE TABLE password_reset_otps (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL,
+    otp_code VARCHAR(6) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    INDEX idx_email_otp (email, otp_code),
+    INDEX idx_expires (expires_at)
+);

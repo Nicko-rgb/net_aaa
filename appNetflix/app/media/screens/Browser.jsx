@@ -11,7 +11,18 @@ import History from './History';
 import styles from '../styles/browser';
 
 const Browser = () => {
-    const { currentScreen, handleScreenChange, searchQuery, setSearchQuery, categories, videos, fetchPadre } = useBrowser();
+    const { 
+        currentScreen, 
+        handleScreenChange, 
+        searchQuery, 
+        setSearchQuery, 
+        activeCategory, 
+        handleCategoryChange, 
+        categories, 
+        videos, 
+        bannerVideos, 
+        fetchPadre 
+    } = useBrowser();
     const { logout } = useAuthContext();
     const [sidebar, setSidebar] = useState(false);
 
@@ -20,16 +31,32 @@ const Browser = () => {
     const renderScreen = () => {
         switch (currentScreen) {
             case 'inicio':
-                return <Inicio categories={categories} videos={videos} />;
+                return (
+                    <Inicio 
+                        categories={categories} 
+                        videos={videos} 
+                        bannerVideos={bannerVideos}
+                        activeCategory={activeCategory}
+                        onCategoryChange={handleCategoryChange}
+                    />
+                );
             case 'favoritos':
                 return <Fovorites />;
             case 'historial':
                 return <History />;
             default:
-                return <Inicio categories={categories} videos={videos} />;
+                return (
+                    <Inicio 
+                        categories={categories} 
+                        videos={videos} 
+                        bannerVideos={bannerVideos}
+                        activeCategory={activeCategory}
+                        onCategoryChange={handleCategoryChange}
+                    />
+                );
         }
     };
-
+    
     return (
         <SafeAreaView style={styles.browser}>
             <Header
