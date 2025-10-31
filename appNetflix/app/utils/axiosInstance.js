@@ -4,7 +4,7 @@ import { API_BASE_URL } from '@env';
 
 // Crear instancia de axios con configuración base
 const apiClient = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: API_BASE_URL || 'http://localhost:7001/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',

@@ -82,9 +82,18 @@ const useBrowser = () => {
     // ✅ Obtener favoritos
     const fetchFavorites = async () => {
         try {
+            const token = await AsyncStorage.getItem('authToken');
+            if (!token) {
+                setFavorites([]);
+                return;
+            }
             const response = await apiClient.get('/favorites');
             setFavorites(response.data);
         } catch (err) {
+            if (err?.response?.status === 401) {
+                setFavorites([]);
+                return;
+            }
             console.error('Error al cargar favoritos:', err);
         }
     };
@@ -92,9 +101,18 @@ const useBrowser = () => {
     // ✅ Obtener historial de reproducción
     const fetchWatchHistory = async () => {
         try {
+            const token = await AsyncStorage.getItem('authToken');
+            if (!token) {
+                setWatchHistory([]);
+                return;
+            }
             const response = await apiClient.get('/history');
             setWatchHistory(response.data);
         } catch (err) {
+            if (err?.response?.status === 401) {
+                setWatchHistory([]);
+                return;
+            }
             console.error('Error al cargar historial:', err);
         }
     };
