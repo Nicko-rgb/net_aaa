@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, TouchableOpacity, Text, ScrollView, Image, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { Video as VideoPlayer } from 'expo-av';
+import { VideoView, useVideoPlayer } from 'expo-video';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import styles from '../styles/video';
 import useBrowser from '../hooks/useBrowser';
 import ShareModal from '../components/ShareModal';
@@ -15,6 +16,37 @@ const Video = () => {
     const { videoData } = route.params || {};
     const [isPlaying, setIsPlaying] = useState(false);
     const [shareModalVisible, setShareModalVisible] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [screenDimensions, setScreenDimensions] = useState(Dimensions.get('window'));
+    const videoRef = useRef(null);
+
+    // Crear el reproductor de video
+    const player = useVideoPlayer(videoData ? getDirectVideoUrl(videoData.videoUrl) : '', (player) => {
+        player.loop = false;
+        player.muted = false;
+    });
+
+    // Manejar cambios de orientación y dimensiones de pantalla
+    useEffect(() => {
+        const subscription = Dimensions.addEventListener('change', ({ window }) => {
+            setScreenDimensions(window);
+        });
+
+        return () => subscription?.remove();
+    }, []);
+
+    // Configurar orientación inicial
+    useEffect(() => {
+        const setupOrientation = async () => {
+            await ScreenOrientation.unlockAsync();
+        };
+        setupOrientation();
+
+        // Restaurar orientación al salir del componente
+        return () => {
+            ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        };
+    }, []);
 
     const handleGoBack = () => {
         navigation.goBack();
@@ -23,10 +55,52 @@ const Video = () => {
     const handlePlay = (video) => {
         setIsPlaying(true);
         addToHistory(video);
+        player.play();
     };
+
+    const handleFullscreenUpdate = async (isInFullscreen) => {
+        console.log('Fullscreen update:', isInFullscreen);
+        setIsFullscreen(isInFullscreen);
+        
+        // Agregar un pequeño delay para evitar conflictos de orientación
+        setTimeout(async () => {
+            try {
+                if (isInFullscreen) {
+                    await ScreenOrientation.unlockAsync();
+                    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+                } else {
+                    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+                }
+            } catch (error) {
+                console.log('Error changing orientation:', error);
+            }
+        }, 100);
+    };
+
+    // Escuchar eventos del reproductor
+    useEffect(() => {
+        const subscription = player.addListener('playbackStatusUpdate', (status) => {
+            if (status.isLoaded && status.didJustFinish) {
+                setIsPlaying(false);
+            }
+        });
+
+        return () => {
+            subscription.remove();
+        };
+    }, [player]);
 
     const handleShare = () => {
         setShareModalVisible(true);
+    };
+
+    const handleOrientationToggle = async () => {
+        const currentOrientation = await ScreenOrientation.getOrientationAsync();
+        if (currentOrientation === ScreenOrientation.Orientation.PORTRAIT_UP) {
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+        } else {
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        }
     };
 
     const handleCloseShareModal = () => {
@@ -47,21 +121,31 @@ const Video = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            {/* Header con botón de retroceso */}
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backIconButton} onPress={handleGoBack}>
-                    <Ionicons name="arrow-back" size={24} color="#fff" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle} numberOfLines={1}>
-                    {videoData.title}
-                </Text>
-                <View style={styles.headerSpacer} />
-            </View>
+        <SafeAreaView style={[styles.container, isFullscreen && styles.fullscreenContainer]}>
+            {/* Header con botón de retroceso - ocultar en fullscreen */}
+            {!isFullscreen && (
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.backIconButton} onPress={handleGoBack}>
+                        <Ionicons name="arrow-back" size={24} color="#fff" />
+                    </TouchableOpacity>
+                    <Text style={styles.headerTitle} numberOfLines={1}>
+                        {videoData.title}
+                    </Text>
+                    <TouchableOpacity style={styles.backIconButton} onPress={handleOrientationToggle}>
+                        <Ionicons name="phone-portrait-outline" size={24} color="#fff" />
+                    </TouchableOpacity>
+                </View>
+            )}
 
             <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 {/* Imagen principal del video o reproductor */}
-                <View style={styles.videoImageContainer}>
+                <View style={[
+                    styles.videoImageContainer, 
+                    isFullscreen && { 
+                        height: screenDimensions.height, 
+                        width: screenDimensions.width 
+                    }
+                ]}>
                     {!isPlaying ? (
                         <>
                             <Image 
@@ -76,16 +160,24 @@ const Video = () => {
                             </View>
                         </>
                     ) : (
-                        <VideoPlayer
-                            source={{ uri: getDirectVideoUrl(videoData.videoUrl) }}
-                            style={styles.videoPlayer}
-                            useNativeControls
-                            resizeMode="contain"
-                            shouldPlay
-                            onPlaybackStatusUpdate={(status) => {
-                                if (status.didJustFinish) {
-                                    setIsPlaying(false);
-                                }
+                        <VideoView
+                            ref={videoRef}
+                            player={player}
+                            style={[
+                                styles.videoPlayer,
+                                isFullscreen && styles.fullscreenVideoPlayer
+                            ]}
+                            allowsFullscreen
+                            allowsPictureInPicture
+                            nativeControls
+                            contentFit="contain"
+                            onFullscreenEnter={() => {
+                                console.log('Entering fullscreen');
+                                handleFullscreenUpdate(true);
+                            }}
+                            onFullscreenExit={() => {
+                                console.log('Exiting fullscreen');
+                                handleFullscreenUpdate(false);
                             }}
                         />
                     )}
