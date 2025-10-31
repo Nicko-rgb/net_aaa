@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
         borderColor: '#373737ff',
         borderRadius: 10,
         overflow: 'hidden',
-        width: '50%',
+        width: '49%',
         height: 180,
         position: 'relative',
         flexDirection: 'column',

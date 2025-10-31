@@ -36,6 +36,7 @@ export default StyleSheet.create({
         position: 'relative',
         width: width,
         height: height * 0.3,
+        backgroundColor: '#000',
     },
     videoImage: {
         width: '100%',
@@ -44,6 +45,7 @@ export default StyleSheet.create({
     videoPlayer: {
         width: '100%',
         height: '100%',
+        backgroundColor: '#000',
     },
     playButtonOverlay: {
         position: 'absolute',
@@ -170,5 +172,24 @@ export default StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
+    },
+    // Estilos para modo fullscreen
+    fullscreenContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#000',
+        zIndex: 1000,
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingHorizontal: 0,
+    },
+    fullscreenVideoPlayer: {
+        flex: 1,
+        backgroundColor: '#000',
+        marginTop: 20, // Espacio para los controles superiores
+        marginBottom: 20, // Espacio para los controles inferiores
     },
 })

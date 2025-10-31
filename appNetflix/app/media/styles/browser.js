@@ -6,7 +6,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#141414',
     },
     views: {
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        flex: 1,
+    },
+    container: {
+        paddingHorizontal: 10,
+        marginTop: 10,
     },
 
     // categorias de videos
@@ -248,10 +253,6 @@ const styles = StyleSheet.create({
     },
 
     // STYLOS COMPARTIDOS
-    container: {
-        paddingHorizontal: 10,
-        marginTop: 10,
-    },
     title: {
         fontSize: 20,
         fontWeight: 'bold',

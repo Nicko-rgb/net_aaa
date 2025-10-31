@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const FooterStyles = StyleSheet.create({
     footerContainer: {
         alignItems: 'center',
-        paddingHorizontal: 5,
+        paddingHorizontal: 10,
         paddingBottom: 10, // Reducido ya que SafeAreaView maneja el safe area automáticamente
         zIndex: 5,
     },
@@ -21,11 +21,12 @@ const FooterStyles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4.65,
         marginBottom: 15,
+        borderRadius: 5,
     },
     startButtonText: {
         color: '#ffffff',
         fontSize: 16,
-        fontWeight: '500',
+        fontWeight: '800',
         textAlign: 'center',
         letterSpacing: 1,
     },

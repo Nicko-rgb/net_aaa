@@ -11,6 +11,7 @@ const useBrowser = () => {
     const [videos, setVideos] = useState([]);
     const [allVideos, setAllVideos] = useState([]); // Almacenar todos los videos originales
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false); // Estado para pull-to-refresh
     const [favorites, setFavorites] = useState([]);
     const [watchHistory, setWatchHistory] = useState([]);
     const [bannerVideos, setBannerVideos] = useState([]);
@@ -235,6 +236,29 @@ const useBrowser = () => {
         loadData();
     }
 
+    // ✅ Función específica para pull-to-refresh
+    const onRefresh = async () => {
+        setRefreshing(true);
+        try {
+            // Resetear filtros a estado inicial
+            setSearchQuery('');
+            setActiveCategory('Todos');
+            
+            // Recargar todos los datos
+            await Promise.all([
+                fetchCategories(),
+                fetchVideos(),
+                fetchFavorites(),
+                fetchWatchHistory(),
+                fetchBannerVideos(),
+            ]);
+        } catch (error) {
+            console.error('Error al refrescar datos:', error);
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
     return {
         currentScreen,
         handleScreenChange,
@@ -249,6 +273,7 @@ const useBrowser = () => {
         watchHistory,
         bannerVideos,
         loading,
+        refreshing,
         error,
         fetchCategories,
         fetchVideos,
@@ -256,6 +281,7 @@ const useBrowser = () => {
         fetchWatchHistory,
         fetchBannerVideos,
         fetchPadre,
+        onRefresh,
         toggleFavorite,
         addToHistory,
         checkIsFavorite,

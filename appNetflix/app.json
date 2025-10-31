@@ -3,12 +3,12 @@
     "name": "Netflix",
     "slug": "Netflix",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "orientation": "default",
+    "icon": "./assets/img/Logo.png",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/img/Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -17,14 +17,23 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/img/Logo.png",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.nixonml.Netflix"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/img/Logo.png"
+    },
+    "plugins": [
+      "expo-video"
+    ],
+    "owner": "nixonml",
+    "extra": {
+      "eas": {
+        "projectId": "b734f6c0-cf67-4e15-a636-591cab14099f"
+      }
     }
   }
 }

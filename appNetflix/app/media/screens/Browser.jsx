@@ -21,6 +21,8 @@ const Browser = () => {
         categories, 
         videos, 
         bannerVideos, 
+        refreshing,
+        onRefresh,
         fetchPadre 
     } = useBrowser();
     const { logout } = useAuthContext();
@@ -38,12 +40,14 @@ const Browser = () => {
                         bannerVideos={bannerVideos}
                         activeCategory={activeCategory}
                         onCategoryChange={handleCategoryChange}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
                     />
                 );
             case 'favoritos':
-                return <Fovorites />;
+                return <Fovorites refreshing={refreshing} onRefresh={onRefresh} />;
             case 'historial':
-                return <History />;
+                return <History refreshing={refreshing} onRefresh={onRefresh} />;
             default:
                 return (
                     <Inicio 
@@ -52,6 +56,8 @@ const Browser = () => {
                         bannerVideos={bannerVideos}
                         activeCategory={activeCategory}
                         onCategoryChange={handleCategoryChange}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
                     />
                 );
         }
